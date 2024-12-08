@@ -64,7 +64,7 @@ def one_move_heuristic(board, ai_symbol):
             else:
                 if h < best_h:
                     best_h = h
-                    best_move = (i, j)
+                    best_move = move
     return best_move, 0
 
 
