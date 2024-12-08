@@ -1,10 +1,71 @@
 import numpy as np
 import copy
-# test = [
-#     [None, None, None],
-#     [None, 'x', None],
+# game_board = [
+#     ['o', None, None],
+#     [None, 'x', 'o'],
 #     [None, None, None],
 # ]
+
+
+def one_move_heuristic(board, ai_symbol):
+    all_moves = all_possible_moves(board)
+    best_move = all_moves[0]
+    best_h = 10
+    for move in all_moves:
+        h = 0
+        temp_board = copy.deepcopy(board)
+        temp_board[move['row']][move['col']] = ai_symbol
+        if is_game_over(temp_board)[0]:
+            return move, 0
+        else:
+            # row
+            for row in temp_board:
+                h = 0
+                for cell in row:
+                    if cell is None:
+                        h += 1
+                    elif cell != ai_symbol:
+                        h = 0
+                        break
+                else:
+                    if h < best_h:
+                        best_h = h
+                        best_move = move
+            # col
+            for i in range(3):
+                h = 0
+                for j in range(3):
+                    if temp_board[j][i] is None:
+                        h += 1
+                    elif temp_board[j][i] is not ai_symbol:
+                        h = 0
+                        break
+                else:
+                    if h < best_h:
+                        best_h = h
+                        best_move = move
+            # diagonals
+            for i in range(3):
+                if temp_board[i][i] is None:
+                    h += 1
+                elif temp_board[i][i] is not ai_symbol:
+                    break
+            else:
+                if h < best_h:
+                    best_h = h
+                    best_move = move
+            # another diagonal
+            anti_diagonal = [(0, 2), (1, 1), (2, 0)]
+            for i, j in anti_diagonal:
+                if temp_board[i][j] is None:
+                    h += 1
+                elif temp_board[i][j] != ai_symbol:
+                    break
+            else:
+                if h < best_h:
+                    best_h = h
+                    best_move = (i, j)
+    return best_move, 0
 
 
 def is_game_over(board):
@@ -184,6 +245,7 @@ if __name__ == "__main__":
             else:
                 print_board(game_board)
         else:
+            # comp_choice = one_move_heuristic(game_board, 'o')[0]
             comp_choice = minimax(game_board, 0, True, 'o')[0]
             # comp_choice = alpha_beta(game_board, 0, -20, 20, True, 'o')[0]
             game_board[comp_choice['row']][comp_choice['col']] = 'o'
