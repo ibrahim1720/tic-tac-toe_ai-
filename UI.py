@@ -28,7 +28,6 @@ class UI:
 
     def algorithm_selection_screen(self):
         font = pygame.font.SysFont("Arial", 30)
-        selected_algorithm = "None"
 
         while not self.exit:
 
@@ -144,11 +143,11 @@ class UI:
                 if self.algorithm == 'minimax':
                     choice = self.ai.minimax(self.grid, 0, True, 'o')[0]
                 elif self.algorithm == 'minimax_symmetry':
-                    pass
+                    choice = self.ai.minimax_symmetry(self.grid, 0, True, 'o')[0]
                 elif self.algorithm == 'alpha_beta':
                     choice = self.ai.alpha_beta(self.grid, 0, -20, 20, True, 'o')[0]
                 elif self.algorithm == 'alpha_beta_symmetry':
-                    pass
+                    choice = self.ai.alpha_beta_symmetry(self.grid, 0, -20, 20, True, 'o')[0]
                 elif self.algorithm == 'one_move_heuristic':
                     choice = self.ai.one_move_heuristic(self.grid, 'o')[0]
 
@@ -225,4 +224,3 @@ class UI:
         self.play = True
         self.game_over = False
         self.algorithm = None
-

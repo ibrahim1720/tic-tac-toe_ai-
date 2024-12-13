@@ -4,7 +4,8 @@ import numpy as np
 
 class AiAlgorithms:
 
-    def all_possible_moves(self, board):
+    @staticmethod
+    def all_possible_moves(board):
         # all_possible_moves[{row:1,col:3},]
         all_moves = []
         for row in range(3):
@@ -13,7 +14,8 @@ class AiAlgorithms:
                     all_moves.append({'row': row, 'col': col})
         return all_moves
 
-    def is_unique(self,move, moves, board):
+    @staticmethod
+    def is_unique(move, moves, board):
         temp_board = copy.deepcopy(board)
         temp_board[move['row']][move['col']] = 'X'
         for i in range(1, 4):
@@ -40,7 +42,8 @@ class AiAlgorithms:
                         all_moves.append(move)
         return all_moves
 
-    def is_game_over(self, board):
+    @staticmethod
+    def is_game_over(board):
         # check rows
         for row in board:
             if row[0] is not None and row[0] == row[1] == row[2]:
@@ -62,7 +65,6 @@ class AiAlgorithms:
                     return False, None
 
         return True, 'tie'
-
 
     def one_move_heuristic(self, board, ai_symbol):
         all_moves = self.all_possible_moves(board)
@@ -124,7 +126,6 @@ class AiAlgorithms:
                         best_move = move
         return best_move, 0
 
-
     def minimax(self, board, depth, is_max, ai_symbol):
         best_move = {'row': -1, 'col': -1}
         is_over, result = self.is_game_over(board)
@@ -153,7 +154,6 @@ class AiAlgorithms:
                     # using dict for shallow copy
                     best_move = dict(move)
         return best_move, best_score
-
 
     def alpha_beta(self, board, depth, alpha, beta, is_max, ai_symbol):
         best_move = {'row': -1, 'col': -1}
@@ -189,4 +189,69 @@ class AiAlgorithms:
 
                 if beta <= alpha:
                     break
+        return best_move, best_score
+
+    def alpha_beta_symmetry(self, board, depth, alpha, beta, is_max, ai_symbol):
+        best_move = {'row': -1, 'col': -1}
+        is_over, result = self.is_game_over(board)
+        if is_over:
+            return best_move, 0 if result == 'tie' else 10 - depth if ai_symbol == result else depth - 10
+
+        if is_max:
+            best_score = -20
+            for move in self.symmetry_reduction(board):
+                board[move['row']][move['col']] = ai_symbol
+                rec_move, rec_result = self.alpha_beta(board, depth + 1, alpha, beta, False, ai_symbol)
+                board[move['row']][move['col']] = None
+                alpha = max(alpha, rec_result)
+                if rec_result > best_score:
+                    best_score = rec_result
+                    # using dict for shallow copy
+                    best_move = dict(move)
+
+                if beta <= alpha:
+                    break
+        else:
+            best_score = 20
+            for move in self.symmetry_reduction(board):
+                # all_possible_moves[{row:1,col:3},]
+                board[move['row']][move['col']] = 'o' if ai_symbol == 'x' else 'x'
+                rec_move, rec_result = self.alpha_beta(board, depth + 1, alpha, beta, True, ai_symbol)
+                board[move['row']][move['col']] = None
+                beta = min(beta, rec_result)
+                if rec_result < best_score:
+                    best_score = rec_result
+                    best_move = dict(move)
+
+                if beta <= alpha:
+                    break
+        return best_move, best_score
+
+    def minimax_symmetry(self, board, depth, is_max, ai_symbol):
+        best_move = {'row': -1, 'col': -1}
+        is_over, result = self.is_game_over(board)
+        if is_over:
+            return best_move, 0 if result == 'tie' else 10 - depth if ai_symbol == result else depth - 10
+
+        if is_max:
+            best_score = -20
+            for move in self.symmetry_reduction(board):
+                board[move['row']][move['col']] = ai_symbol
+                rec_move, rec_result = self.minimax(board, depth + 1, False, ai_symbol)
+                board[move['row']][move['col']] = None
+                if rec_result > best_score:
+                    best_score = rec_result
+                    # using dict for shallow copy
+                    best_move = dict(move)
+        else:
+            best_score = 20
+            for move in self.symmetry_reduction(board):
+                # all_possible_moves[{row:1,col:3},]
+                board[move['row']][move['col']] = 'o' if ai_symbol == 'x' else 'x'
+                rec_move, rec_result = self.minimax(board, depth + 1, True, ai_symbol)
+                board[move['row']][move['col']] = None
+                if rec_result < best_score:
+                    best_score = rec_result
+                    # using dict for shallow copy
+                    best_move = dict(move)
         return best_move, best_score
