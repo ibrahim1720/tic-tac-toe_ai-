@@ -1,5 +1,7 @@
 import numpy as np
 import copy
+from UI import UI
+from Ai_Algorithms import AiAlgorithms
 # game_board = [
 #     ['o', None, None],
 #     [None, 'x', 'o'],
@@ -228,6 +230,8 @@ def print_board(board):
 
 
 if __name__ == "__main__":
+    game = UI()
+
     game_board = [
         [None, None, None],
         [None, None, None],
@@ -245,8 +249,9 @@ if __name__ == "__main__":
             else:
                 print_board(game_board)
         else:
+            ai = AiAlgorithms()
             # comp_choice = one_move_heuristic(game_board, 'o')[0]
-            comp_choice = minimax(game_board, 0, True, 'o')[0]
+            comp_choice = ai.minimax(game_board, 0, True, 'o')[0]
             # comp_choice = alpha_beta(game_board, 0, -20, 20, True, 'o')[0]
             game_board[comp_choice['row']][comp_choice['col']] = 'o'
             turn = 'x'
@@ -254,3 +259,4 @@ if __name__ == "__main__":
         game_over = is_game_over(game_board)
         if game_over[0]:
             print(f'{game_over[1]} wins' if game_over[1] != 'tie' else 'tie')
+
