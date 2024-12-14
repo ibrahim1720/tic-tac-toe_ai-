@@ -141,11 +141,11 @@ class UI:
             else:
                 choice = None
                 if self.algorithm == 'minimax':
-                    choice = self.ai.minimax(self.grid, 0, True, 'o')[0]
+                    choice = self.ai.minimax(self.grid, True, 'o')[0]
                 elif self.algorithm == 'minimax_symmetry':
                     choice = self.ai.minimax_symmetry(self.grid, 0, True, 'o')[0]
                 elif self.algorithm == 'alpha_beta':
-                    choice = self.ai.alpha_beta(self.grid, 0, -20, 20, True, 'o')[0]
+                    choice = self.ai.alpha_beta(self.grid, -20, 20, True, 'o')[0]
                 elif self.algorithm == 'alpha_beta_symmetry':
                     choice = self.ai.alpha_beta_symmetry(self.grid, 0, -20, 20, True, 'o')[0]
                 elif self.algorithm == 'one_move_heuristic':
