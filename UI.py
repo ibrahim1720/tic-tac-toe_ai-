@@ -27,7 +27,7 @@ class UI:
         self.algorithm_selection_screen()
 
     def algorithm_selection_screen(self):
-        font = pygame.font.SysFont("Arial", 30)
+        font = pygame.font.SysFont("Arial", 16)
 
         while not self.exit:
 
@@ -35,30 +35,40 @@ class UI:
             title = font.render("Choose AI Algorithm", True, (255, 255, 255))
             self.window.blit(title, (self.WIDTH // 2 - title.get_width() // 2, 50))
 
-            minimax_button = pygame.Rect(self.WIDTH // 2 - 155, 150, 300, 70)
+            minimax_button = pygame.Rect(self.WIDTH // 2 - 155, 150, 300, 40)
             pygame.draw.rect(self.window, (50, 50, 50), minimax_button)
             minimax_text = font.render("Minimax Algorithm", True, (255, 255, 255))
-            self.window.blit(minimax_text, (self.WIDTH // 2 - minimax_text.get_width() // 2, 165))
+            self.window.blit(minimax_text, (self.WIDTH // 2 - minimax_text.get_width() // 2, 160))
 
-            minimax_sym_button = pygame.Rect(self.WIDTH // 2 - 155, 240, 300, 70)
+            minimax_depth_button = pygame.Rect(self.WIDTH // 2 - 155, 200, 300, 40)
+            pygame.draw.rect(self.window, (50, 50, 50), minimax_depth_button)
+            minimax_depth_text = font.render("Minimax with Depth", True, (255, 255, 255))
+            self.window.blit(minimax_depth_text, (self.WIDTH // 2 - minimax_depth_text.get_width() // 2, 210))
+
+            minimax_sym_button = pygame.Rect(self.WIDTH // 2 - 155, 250, 300, 40)
             pygame.draw.rect(self.window, (50, 50, 50), minimax_sym_button)
             minimax_sym_text = font.render("Minimax with Symmetry", True, (255, 255, 255))
-            self.window.blit(minimax_sym_text, (self.WIDTH // 2 - minimax_sym_text.get_width() // 2, 255))
+            self.window.blit(minimax_sym_text, (self.WIDTH // 2 - minimax_sym_text.get_width() // 2, 260))
 
-            alpha_beta_button = pygame.Rect(self.WIDTH // 2 - 155, 330, 300, 70)
+            alpha_beta_button = pygame.Rect(self.WIDTH // 2 - 155, 300, 300, 40)
             pygame.draw.rect(self.window, (50, 50, 50), alpha_beta_button)
             alpha_beta_text = font.render("Alpha Beta", True, (255, 255, 255))
-            self.window.blit(alpha_beta_text, (self.WIDTH // 2 - alpha_beta_text.get_width() // 2, 345))
+            self.window.blit(alpha_beta_text, (self.WIDTH // 2 - alpha_beta_text.get_width() // 2, 310))
 
-            alpha_beta_sym_button = pygame.Rect(self.WIDTH // 2 - 155, 420, 300, 70)
+            alpha_beta_depth_button = pygame.Rect(self.WIDTH // 2 - 155, 350, 300, 40)
+            pygame.draw.rect(self.window, (50, 50, 50), alpha_beta_depth_button)
+            alpha_beta_depth_text = font.render("Alpha Beta with depth", True, (255, 255, 255))
+            self.window.blit(alpha_beta_depth_text, (self.WIDTH // 2 - alpha_beta_depth_text.get_width() // 2, 360))
+
+            alpha_beta_sym_button = pygame.Rect(self.WIDTH // 2 - 155, 400, 300, 40)
             pygame.draw.rect(self.window, (50, 50, 50), alpha_beta_sym_button)
             alpha_beta_sym_text = font.render("Alpha Beta with Symmetry", True, (255, 255, 255))
-            self.window.blit(alpha_beta_sym_text, (self.WIDTH // 2 - alpha_beta_sym_text.get_width() // 2, 435))
+            self.window.blit(alpha_beta_sym_text, (self.WIDTH // 2 - alpha_beta_sym_text.get_width() // 2, 410))
 
-            one_move_button = pygame.Rect(self.WIDTH // 2 - 155, 510, 300, 70)
+            one_move_button = pygame.Rect(self.WIDTH // 2 - 155, 450, 300, 40)
             pygame.draw.rect(self.window, (50, 50, 50), one_move_button)
             one_move_text = font.render("One Move Heuristic", True, (255, 255, 255))
-            self.window.blit(one_move_text, (self.WIDTH // 2 - one_move_text.get_width() // 2, 525))
+            self.window.blit(one_move_text, (self.WIDTH // 2 - one_move_text.get_width() // 2, 460))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -69,11 +79,17 @@ class UI:
                     if minimax_button.collidepoint(mouse_pos):
                         self.algorithm = 'minimax'
                         self.run_game()
+                    elif minimax_depth_button.collidepoint(mouse_pos):
+                        self.algorithm = 'minimax_depth'
+                        self.run_game()
                     elif minimax_sym_button.collidepoint(mouse_pos):
                         self.algorithm = 'minimax_symmetry'
                         self.run_game()
                     elif alpha_beta_button.collidepoint(mouse_pos):
                         self.algorithm = 'alpha_beta'
+                        self.run_game()
+                    elif alpha_beta_depth_button.collidepoint(mouse_pos):
+                        self.algorithm = 'alpha_beta_depth'
                         self.run_game()
                     elif alpha_beta_sym_button.collidepoint(mouse_pos):
                         self.algorithm = 'alpha_beta_symmetry'
@@ -142,10 +158,14 @@ class UI:
                 choice = None
                 if self.algorithm == 'minimax':
                     choice = self.ai.minimax(self.grid, True, 'o')[0]
+                elif self.algorithm == 'minimax_depth':
+                    choice = self.ai.minimax_depth(self.grid, 0 , True , '0')[0]
                 elif self.algorithm == 'minimax_symmetry':
                     choice = self.ai.minimax_symmetry(self.grid, 0, True, 'o')[0]
                 elif self.algorithm == 'alpha_beta':
                     choice = self.ai.alpha_beta(self.grid, -20, 20, True, 'o')[0]
+                elif self.algorithm == 'alpha_beta_depth':
+                    choice = self.ai.alpha_beta_depth(self.grid, 0, -20, 20, True, 'o')[0]
                 elif self.algorithm == 'alpha_beta_symmetry':
                     choice = self.ai.alpha_beta_symmetry(self.grid, 0, -20, 20, True, 'o')[0]
                 elif self.algorithm == 'one_move_heuristic':
