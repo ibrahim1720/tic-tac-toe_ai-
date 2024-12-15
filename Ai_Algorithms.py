@@ -292,17 +292,23 @@ class AiAlgorithms:
                     break
         return best_move, best_score
 
-    def minimax_symmetry(self, board, depth, is_max, ai_symbol):
+    def minimax_heuristic_reduction(self, board, depth, is_max, ai_symbol):
         best_move = {'row': -1, 'col': -1}
         is_over, result = self.is_game_over(board)
         if is_over:
             return best_move, 0 if result == 'tie' else 10 - depth if ai_symbol == result else depth - 10
-
+        all_moves = self.all_possible_moves(board)
+        # checking first move
+        if len(all_moves) >= 8:
+            if board[1][1] is None:
+                return {'row': 1, 'col': 1}, 0
+            else:
+                return {'row': 0, 'col': 0}, 0
         if is_max:
             best_score = -20
-            for move in self.symmetry_reduction(board):
+            for move in all_moves:
                 board[move['row']][move['col']] = ai_symbol
-                rec_move, rec_result = self.minimax_symmetry(board, depth + 1, False, ai_symbol)
+                rec_move, rec_result = self.minimax_heuristic_reduction(board, depth + 1, False, ai_symbol)
                 board[move['row']][move['col']] = None
                 if rec_result > best_score:
                     best_score = rec_result
@@ -310,10 +316,10 @@ class AiAlgorithms:
                     best_move = dict(move)
         else:
             best_score = 20
-            for move in self.symmetry_reduction(board):
+            for move in all_moves:
                 # all_possible_moves[{row:1,col:3},]
                 board[move['row']][move['col']] = 'o' if ai_symbol == 'x' else 'x'
-                rec_move, rec_result = self.minimax_symmetry(board, depth + 1, True, ai_symbol)
+                rec_move, rec_result = self.minimax_heuristic_reduction(board, depth + 1, True, ai_symbol)
                 board[move['row']][move['col']] = None
                 if rec_result < best_score:
                     best_score = rec_result

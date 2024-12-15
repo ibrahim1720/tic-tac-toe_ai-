@@ -42,7 +42,7 @@ class UI:
 
             minimax_sym_button = pygame.Rect(self.WIDTH // 2 - 155, 240, 300, 70)
             pygame.draw.rect(self.window, (50, 50, 50), minimax_sym_button)
-            minimax_sym_text = font.render("Minimax with Symmetry", True, (255, 255, 255))
+            minimax_sym_text = font.render("heuristic reduction minimax", True, (255, 255, 255))
             self.window.blit(minimax_sym_text, (self.WIDTH // 2 - minimax_sym_text.get_width() // 2, 255))
 
             alpha_beta_button = pygame.Rect(self.WIDTH // 2 - 155, 330, 300, 70)
@@ -70,7 +70,7 @@ class UI:
                         self.algorithm = 'minimax'
                         self.run_game()
                     elif minimax_sym_button.collidepoint(mouse_pos):
-                        self.algorithm = 'minimax_symmetry'
+                        self.algorithm = 'minimax_heuristic_reduction'
                         self.run_game()
                     elif alpha_beta_button.collidepoint(mouse_pos):
                         self.algorithm = 'alpha_beta'
@@ -142,8 +142,8 @@ class UI:
                 choice = None
                 if self.algorithm == 'minimax':
                     choice = self.ai.minimax(self.grid, True, 'o')[0]
-                elif self.algorithm == 'minimax_symmetry':
-                    choice = self.ai.minimax_symmetry(self.grid, 0, True, 'o')[0]
+                elif self.algorithm == 'minimax_heuristic_reduction':
+                    choice = self.ai.minimax_heuristic_reduction(self.grid, 0, True, 'o')[0]
                 elif self.algorithm == 'alpha_beta':
                     choice = self.ai.alpha_beta(self.grid, -20, 20, True, 'o')[0]
                 elif self.algorithm == 'alpha_beta_symmetry':
